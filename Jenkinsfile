@@ -2,31 +2,32 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'myapp'
+        DOCKER_IMAGE = 'healthcare-app'
+        IMAGE_TAG = 'latest'
     }
     
     stages {
-        stage('Build Blue Version') {
+        stage('Build') {
             steps {
                 sh '''
                     cd app
-                    docker build -t ${DOCKER_IMAGE}:v1 .
+                    docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} .
                 '''
             }
         }
         
-        stage('Security Scan Blue') {
+        stage('Security Scan') {
             steps {
                 sh '''
-                    trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:v1
+                    trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${IMAGE_TAG}
                 '''
             }
         }
         
-        stage('Deploy Blue') {
+        stage('Deploy') {
             steps {
                 sh '''
-                    docker save ${DOCKER_IMAGE}:v1 | sudo k3s ctr images import -
+                    docker save ${DOCKER_IMAGE}:${IMAGE_TAG} | sudo k3s ctr images import -
                     kubectl apply -f k8s/rbac.yaml
                     kubectl apply -f k8s/secret.yaml
                     kubectl apply -f k8s/deployment-blue.yaml
@@ -35,54 +36,14 @@ pipeline {
                 '''
             }
         }
-        
-        stage('Build Green Version') {
-            steps {
-                sh '''
-                    cd app
-                    docker build -t ${DOCKER_IMAGE}:v2 .
-                '''
-            }
-        }
-        
-        stage('Security Scan Green') {
-            steps {
-                sh '''
-                    trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:v2
-                '''
-            }
-        }
-        
-        stage('Deploy Green') {
-            steps {
-                sh '''
-                    docker save ${DOCKER_IMAGE}:v2 | sudo k3s ctr images import -
-                    kubectl apply -f k8s/deployment-green.yaml
-                    kubectl rollout status deployment/myapp-green
-                '''
-            }
-        }
-        
-        stage('Switch Traffic to Green') {
-            steps {
-                input message: 'Switch traffic to Green environment?', ok: 'Switch'
-                sh '''
-                    kubectl patch service myapp-service -p '{"spec":{"selector":{"color":"green"}}}'
-                    echo "Traffic switched to Green!"
-                '''
-            }
-        }
     }
     
     post {
         success {
-            echo 'Blue-Green deployment completed successfully!'
+            echo 'DevSecOps pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed. Rolling back to Blue...'
-            sh '''
-                kubectl patch service myapp-service -p '{"spec":{"selector":{"color":"blue"}}}'
-            '''
+            echo 'Pipeline failed. Check logs for details.'
         }
     }
 }

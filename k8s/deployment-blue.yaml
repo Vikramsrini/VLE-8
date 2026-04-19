@@ -17,7 +17,7 @@ spec:
       serviceAccountName: app-sa
       containers:
       - name: myapp
-        image: myapp:v1
+        image: healthcare-app:latest
         ports:
         - containerPort: 3000
         env:

@@ -40,9 +40,7 @@ pipeline {
             steps {
                 sh '''
                     cd app
-                    cp index-green.html index.html
                     docker build -t ${DOCKER_IMAGE}:v2 .
-                    git checkout index.html
                 '''
             }
         }

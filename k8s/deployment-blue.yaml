@@ -14,8 +14,15 @@ spec:
         app: myapp
         color: blue
     spec:
+      serviceAccountName: app-sa
       containers:
       - name: myapp
         image: myapp:v1
         ports:
-        - containerPort: 80
+        - containerPort: 3000
+        env:
+        - name: ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: api-key

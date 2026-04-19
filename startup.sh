@@ -22,11 +22,17 @@ echo "Starting Prometheus Node Exporter..."
 sudo systemctl start prometheus-node-exporter
 sudo systemctl enable prometheus-node-exporter
 
+# Start k3s (Kubernetes)
+echo "Starting k3s (Kubernetes)..."
+sudo systemctl start k3s
+sudo systemctl enable k3s
+
 echo "All services started successfully!"
 echo ""
 echo "Service URLs:"
-echo "  Jenkins:   http://3.106.239.232:8080"
-echo "  Prometheus: http://3.106.239.232:9090"
-echo "  Grafana:   http://3.106.239.232:3000"
+echo "  Jenkins:   http://3.106.244.131:8080"
+echo "  Prometheus: http://3.106.244.131:9090"
+echo "  Grafana:   http://3.106.244.131:3000"
+echo "  App:       http://3.106.244.131:30080"
 echo ""
 echo "Grafana default credentials: admin / admin"

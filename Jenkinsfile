@@ -11,6 +11,7 @@ pipeline {
                 sh '''
                     cd app
                     docker build -t ${DOCKER_IMAGE}:v1 .
+                    docker save ${DOCKER_IMAGE}:v1 | sudo k3s ctr images import -
                 '''
             }
         }
@@ -31,6 +32,7 @@ pipeline {
                     cd app
                     cp index-green.html index.html
                     docker build -t ${DOCKER_IMAGE}:v2 .
+                    docker save ${DOCKER_IMAGE}:v2 | sudo k3s ctr images import -
                     git checkout index.html
                 '''
             }

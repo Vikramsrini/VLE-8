@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Healthcare System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Smart Healthcare System</h1>
+            <p class="subtitle">Secure Patient Data Management</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Patients</h3>
+                <p id="totalPatients">Loading...</p>
+            </div>
+            <div class="stat-card">
+                <h3>System Status</h3>
+                <p id="systemStatus">Checking...</p>
+            </div>
+            <div class="stat-card">
+                <h3>Security</h3>
+                <p>🔒 AES-256 Encrypted</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Patient List</h2>
+            <div id="patientList">
+                <p>Loading patients...</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>➕ Add New Patient</h2>
+            <form id="patientForm">
+                <div class="form-group">
+                    <label for="name">Patient Name:</label>
+                    <input type="text" id="name" required placeholder="Enter patient name">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" required placeholder="Enter age">
+                </div>
+                <div class="form-group">
+                    <label for="condition">Medical Condition:</label>
+                    <input type="text" id="condition" required placeholder="Enter medical condition">
+                </div>
+                <div class="form-group">
+                    <label for="ssn">SSN (Optional):</label>
+                    <input type="text" id="ssn" placeholder="XXX-XX-XXXX">
+                </div>
+                <button type="submit" class="btn-primary">Add Patient</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>🔍 View Patient Details</h2>
+            <div class="form-group">
+                <label for="patientId">Patient ID:</label>
+                <input type="number" id="patientId" placeholder="Enter patient ID">
+                <button onclick="viewPatient()" class="btn-secondary">View Details</button>
+            </div>
+            <div id="patientDetails"></div>
+        </div>
+
+        <div class="section">
+            <h2>📊 System Metrics</h2>
+            <div id="metrics">
+                <p>Loading metrics...</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>DevSecOps Healthcare System | PHI Compliant | Encrypted & Secure</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

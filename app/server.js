@@ -23,12 +23,13 @@ app.use(limiter);
 
 // Encryption functions for PHI
 const algorithm = 'aes-256-cbc';
-const secretKey = process.env.ENCRYPTION_KEY || 'default-key-change-in-production';
+const secretKey = process.env.ENCRYPTION_KEY || 'default-key-change-in-production-default-key';
 const iv = crypto.randomBytes(16);
 
 function encrypt(text) {
   const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey), iv);
+  const key = Buffer.from(secretKey.padEnd(32, '0').slice(0, 32));
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return iv.toString('hex') + ':' + encrypted.toString('hex');
@@ -38,7 +39,8 @@ function decrypt(text) {
   const parts = text.split(':');
   const iv = Buffer.from(parts.shift(), 'hex');
   const encrypted = Buffer.from(parts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv(algorithm, Buffer.from(secretKey), iv);
+  const key = Buffer.from(secretKey.padEnd(32, '0').slice(0, 32));
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
   let decrypted = decipher.update(encrypted);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();

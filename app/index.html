@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blue-Green Deployment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 { color: #333; }
+        .version { font-size: 48px; margin: 20px 0; }
+        .blue { color: #2196F3; }
+        .green { color: #4CAF50; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blue-Green Deployment Demo</h1>
+        <div class="version blue">VERSION 1 (BLUE)</div>
+        <p>This is the <strong>BLUE</strong> environment</p>
+    </div>
+</body>
+</html>

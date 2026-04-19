@@ -15,6 +15,16 @@ pipeline {
             }
         }
         
+        stage('Deploy Blue') {
+            steps {
+                sh '''
+                    kubectl apply -f k8s/deployment-blue.yaml
+                    kubectl apply -f k8s/service.yaml
+                    kubectl rollout status deployment/myapp-blue
+                '''
+            }
+        }
+        
         stage('Build Green Version') {
             steps {
                 sh '''
@@ -26,20 +36,21 @@ pipeline {
             }
         }
         
-        stage('Deploy Blue') {
+        stage('Deploy Green') {
             steps {
                 sh '''
-                    echo "Blue deployment - Docker image ${DOCKER_IMAGE}:v1 built successfully"
-                    docker images | grep ${DOCKER_IMAGE}
+                    kubectl apply -f k8s/deployment-green.yaml
+                    kubectl rollout status deployment/myapp-green
                 '''
             }
         }
         
-        stage('Deploy Green') {
+        stage('Switch Traffic to Green') {
             steps {
+                input message: 'Switch traffic to Green environment?', ok: 'Switch'
                 sh '''
-                    echo "Green deployment - Docker image ${DOCKER_IMAGE}:v2 built successfully"
-                    docker images | grep ${DOCKER_IMAGE}
+                    kubectl patch service myapp-service -p '{"spec":{"selector":{"color":"green"}}}'
+                    echo "Traffic switched to Green!"
                 '''
             }
         }
@@ -50,7 +61,10 @@ pipeline {
             echo 'Blue-Green deployment completed successfully!'
         }
         failure {
-            echo 'Pipeline failed.'
+            echo 'Pipeline failed. Rolling back to Blue...'
+            sh '''
+                kubectl patch service myapp-service -p '{"spec":{"selector":{"color":"blue"}}}'
+            '''
         }
     }
 }

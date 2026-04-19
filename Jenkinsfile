@@ -21,7 +21,7 @@ pipeline {
                     cd app
                     cp index-green.html index.html
                     docker build -t ${DOCKER_IMAGE}:v2 .
-                    cp index.html.backup index.html
+                    git checkout index.html
                 '''
             }
         }

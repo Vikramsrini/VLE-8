@@ -11,7 +11,14 @@ pipeline {
                 sh '''
                     cd app
                     docker build -t ${DOCKER_IMAGE}:v1 .
-                    docker save ${DOCKER_IMAGE}:v1 | sudo k3s ctr images import -
+                '''
+            }
+        }
+        
+        stage('Security Scan Blue') {
+            steps {
+                sh '''
+                    trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:v1
                 '''
             }
         }
@@ -19,6 +26,9 @@ pipeline {
         stage('Deploy Blue') {
             steps {
                 sh '''
+                    docker save ${DOCKER_IMAGE}:v1 | sudo k3s ctr images import -
+                    kubectl apply -f k8s/rbac.yaml
+                    kubectl apply -f k8s/secret.yaml
                     kubectl apply -f k8s/deployment-blue.yaml
                     kubectl apply -f k8s/service.yaml
                     kubectl rollout status deployment/myapp-blue
@@ -32,8 +42,15 @@ pipeline {
                     cd app
                     cp index-green.html index.html
                     docker build -t ${DOCKER_IMAGE}:v2 .
-                    docker save ${DOCKER_IMAGE}:v2 | sudo k3s ctr images import -
                     git checkout index.html
+                '''
+            }
+        }
+        
+        stage('Security Scan Green') {
+            steps {
+                sh '''
+                    trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:v2
                 '''
             }
         }
@@ -41,6 +58,7 @@ pipeline {
         stage('Deploy Green') {
             steps {
                 sh '''
+                    docker save ${DOCKER_IMAGE}:v2 | sudo k3s ctr images import -
                     kubectl apply -f k8s/deployment-green.yaml
                     kubectl rollout status deployment/myapp-green
                 '''

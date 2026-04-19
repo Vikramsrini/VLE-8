@@ -1,1 +1,1 @@
-ssh -i devops.pem ubuntu@52.62.7.217
+ssh -i devops.pem ubuntu@16.176.233.103

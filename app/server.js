@@ -7,13 +7,8 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware (disable HTTPS-only headers for HTTP access)
-app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginOpenerPolicy: false,
-  crossOriginEmbedderPolicy: false,
-  originAgentCluster: false
-}));
+// Security middleware - completely disabled for HTTP access
+// app.use(helmet());
 app.use(express.json());
 
 // Serve static frontend files
